@@ -107,7 +107,13 @@ public class QueryBuilder<T extends BaseStormModel> {
                     .append(" ")
                     .append(wc.comparison.getSqlOp())
                     .append(" ?"); // polyfill with f.toSqlStringType(value)
-            values.add(f.toSql(wc.value));
+
+            if (wc.value != null) {
+                values.add(f.toSql(wc.value));
+            } else {
+                values.add(null);
+            }
+
             if (!isLast) {
                 if (or) {
                     or = false;

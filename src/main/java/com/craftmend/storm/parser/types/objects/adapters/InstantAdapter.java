@@ -7,13 +7,18 @@ import com.craftmend.storm.parser.types.objects.StormTypeAdapter;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 public class InstantAdapter extends StormTypeAdapter<Instant> {
 
     @Override
     public Instant fromSql(ParsedField parsedField, Object sqlValue) {
         if (sqlValue == null) return null;
-        return new Timestamp((Long) sqlValue).toInstant();
+        if (sqlValue instanceof LocalDateTime)
+            return ((LocalDateTime) sqlValue).atZone(ZoneId.systemDefault()).toInstant();
+        return Instant.parse(sqlValue.toString());
     }
 
     @Override
