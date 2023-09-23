@@ -2,6 +2,7 @@ package com.craftmend.storm;
 
 import com.craftmend.storm.api.BaseStormModel;
 import com.craftmend.storm.api.builders.QueryBuilder;
+import com.craftmend.storm.api.enums.KeyType;
 import com.craftmend.storm.connection.StormDriver;
 import com.craftmend.storm.gson.InstantTypeAdapter;
 import com.craftmend.storm.logger.StormLogger;
@@ -278,10 +279,12 @@ public class Storm {
             }
         }
         Object[] preparedValues = new Object[nonAutoFields];
+        ParsedField pkField = null;
         int pvi = 0;
         for (int i = 0; i < model.parsed(this).getParsedFields().length; i++) {
             boolean notLast = (i+1) != nonAutoFields;
             ParsedField mf = model.parsed(this).getParsedFields()[i];
+            if (mf.getKeyType() == KeyType.PRIMARY) pkField = mf;
             if (mf.isAutoIncrement()) {
                 // skip auto fields
                 continue;
@@ -316,7 +319,7 @@ public class Storm {
             updateOrInsert = updateOrInsert
                     .replace("%psUpdateValues", updateValues.toString())
                     .replaceAll("%tableName", model.parsed(this).getTableName())
-                    .replace("%pk", model.getPk().toString());
+                    .replace("%pk", pkField.valueOn(model).toString());
 
             model.postSave();
             driver.executeUpdate(updateOrInsert, preparedValues);
