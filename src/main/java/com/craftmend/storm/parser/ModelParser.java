@@ -57,8 +57,13 @@ public class ModelParser<T extends BaseStormModel> {
         return null;
     }
 
-    public T fromResultSet(ResultSet resultSet, List<RelationField> relationFields) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException {
+    public T fromResultSet(ResultSet resultSet, List<RelationField> relationFields) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException, SQLException, NoSuchFieldException {
         T emptySelf = ownType.getConstructor().newInstance();
+
+        // set persistency as it's coming from the database already
+        Field persistencyField = BaseStormModel.class.getDeclaredField("isPersistent");
+        persistencyField.setAccessible(true);
+        persistencyField.setBoolean(emptySelf, true);
 
         // map normal fields
         for (ParsedField parsedField : parsedFields) {

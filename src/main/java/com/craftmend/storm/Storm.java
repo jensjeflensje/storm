@@ -307,9 +307,10 @@ public class Storm {
                 .replaceAll("%tableName", model.parsed(this).getTableName());
 
 
-        if (model.getPk() == null) {
+        if (!model.isPersistent()) {
             Object o = driver.executeUpdate(insertStatement, preparedValues);
-            model.setPk(o);
+            // only set if the pk hasn't been explicitly set before saving
+            if (model.getPk() == null) model.setPk(o);
             model.postSave();
         } else {
             updateOrInsert = updateOrInsert

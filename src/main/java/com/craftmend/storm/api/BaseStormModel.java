@@ -18,6 +18,8 @@ public abstract class BaseStormModel {
 
     private ModelParser<? extends BaseStormModel> parsedSelf;
     private StatementBuilder statementBuilder;
+    @Getter
+    private boolean isPersistent = false;
 
     public ModelParser<? extends BaseStormModel> parsed(Storm orm) {
         if (parsedSelf != null) return parsedSelf;
