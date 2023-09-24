@@ -51,10 +51,7 @@ public class ParsedField<T> {
         Object fieldValue = this.reflectedField.get(model);
         if (fieldValue == null) return null;
         Object value = toSql(fieldValue);
-
-        return this.adapter.escapeAsString()
-                ? this.toSqlStringType(value)
-                : value;
+        return value;
     }
 
     public Object toSql(Object value) {

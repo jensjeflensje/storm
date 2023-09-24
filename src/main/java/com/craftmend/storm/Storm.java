@@ -319,7 +319,7 @@ public class Storm {
             updateOrInsert = updateOrInsert
                     .replace("%psUpdateValues", updateValues.toString())
                     .replaceAll("%tableName", model.parsed(this).getTableName())
-                    .replace("%pk", pkField.valueOn(model).toString());
+                    .replace("%pk", pkField.toSqlStringType(pkField.valueOn(model)).toString());
 
             model.postSave();
             driver.executeUpdate(updateOrInsert, preparedValues);
